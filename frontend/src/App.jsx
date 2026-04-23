@@ -1,15 +1,28 @@
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import FiiCard from "./components/FiiCard"
+import FiiFilter from "./components/FiiFilter"
 import LeadModal from "./components/LeadModal"
 import { fetchFiis } from "./services/api"
 
 export default function App() {
-  const [fiis, setFiis] = useState([])
   const [openModal, setOpenModal] = useState(false)
+  const [fiis, setFiis] = useState([])
+  const [selectedTickers, setSelectedTickers] = useState([])
 
   useEffect(() => {
-    fetchFiis().then(setFiis)
+    fetchFiis().then(data => {
+      setFiis(data)
+
+      // 🔥 seleciona todos automaticamente
+      const allTickers = [...new Set(data.map(f => f.ticker))]
+      setSelectedTickers(allTickers)
+    })
   }, [])
+
+  const filteredFiis =
+    selectedTickers.length === 0
+      ? fiis
+      : fiis.filter(f => selectedTickers.includes(f.ticker))
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -49,46 +62,51 @@ export default function App() {
         </div>
       </header>
 
-      {/* CONTENT */}
-      <main className="max-w-3xl mx-auto px-6 py-10">
-        <div className="bg-white border rounded-xl p-6 mb-8 text-sm">
+      {/* 🔍 FILTRO (autocomplete + multi-select) */}
+      <FiiFilter
+        fiis={fiis}
+        selected={selectedTickers}
+        setSelected={setSelectedTickers}
+      />
 
-          <h3 className="font-semibold text-gray-800 mb-4">
-            O que analisamos nos FIIs:
-          </h3>
+      {/* 📊 CONTADOR */}
+      <div className="max-w-3xl mx-auto px-6 mt-4">
+        <div className="flex justify-between items-center text-sm text-gray-600">
 
-          <div className="space-y-3">
+          <span>
+            {filteredFiis.length} análise
+            {filteredFiis.length !== 1 && "s"} encontrada
+            {filteredFiis.length !== 1 && "s"}
+          </span>
 
-            <div>
-              <span className="font-semibold text-red-600">
-                ❗ Yield ilusório
+          {selectedTickers.length > 0 && (
+            <span className="text-gray-500">
+              Filtrando por:{" "}
+              <span className="font-semibold">
+                {selectedTickers.join(", ")}
               </span>
-              <p className="text-gray-600">
-                Dividendos inflados por vendas de ativos, ganhos pontuais ou eventos não recorrentes.
-              </p>
-            </div>
+            </span>
+          )}
 
-            <div>
-              <span className="font-semibold text-yellow-600">
-                ⚠️ Yield em queda
-              </span>
-              <p className="text-gray-600">
-                Dividendos que parecem estáveis, mas estão sendo pressionados por vacância, saída de inquilinos ou queda operacional.
-              </p>
-            </div>
-
-          </div>
         </div>
-        <h2 className="text-center text-xl font-semibold text-gray-700 mb-6">
-          Últimas Análises de FIIs
-        </h2>
+      </div>
 
-        {fiis.map((fii, index) => (
-          <FiiCard key={index} fii={fii} />
-        ))}
+      {/* CONTENT */}
+      <main className="max-w-3xl mx-auto px-6 py-6">
+
+        {filteredFiis.length === 0 ? (
+          <p className="text-center text-gray-500">
+            Nenhum FII encontrado
+          </p>
+        ) : (
+          filteredFiis.map((fii, index) => (
+            <FiiCard key={index} fii={fii} />
+          ))
+        )}
+
       </main>
-
       <LeadModal open={openModal} onClose={() => setOpenModal(false)} />
+
     </div>
   )
 }
