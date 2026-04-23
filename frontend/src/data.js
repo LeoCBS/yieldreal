@@ -1,3 +1,23 @@
+const meses = {
+  "Janeiro": 0,
+  "Fevereiro": 1,
+  "Março": 2,
+  "Abril": 3,
+  "Maio": 4,
+  "Junho": 5,
+  "Julho": 6,
+  "Agosto": 7,
+  "Setembro": 8,
+  "Outubro": 9,
+  "Novembro": 10,
+  "Dezembro": 11,
+};
+
+function parseMesAno(mesStr) {
+  const [mesNome, ano] = mesStr.split("/");
+  return new Date(Number(ano), meses[mesNome]);
+}
+
 export const mockFiis = [
   {
     ticker: "HGLG11",
@@ -103,5 +123,65 @@ export const mockFiis = [
     score_risco: 75,
     alerta: "ATENÇÃO",
     referencia: "Relatório gerencial Fevereiro/2026"
+  },
+  {
+    ticker: "HGRE11",
+    mes: "Janeiro/2026",
+    resumo: "Fundo apresentou resultado de R$0,75/cota com distribuição de R$0,85, indicando uso de receitas não recorrentes para sustentar o dividendo.",
+
+    nao_recorrente: {
+      existe: true,
+      descricao: "Resultado impactado pelo vencimento de ativos mobiliários (R$0,25/cota)."
+    },
+
+    riscos: "Distribuição acima do resultado recorrente e presença relevante de receitas extraordinárias.",
+
+    sustentabilidade: "Média",
+    conclusao: "Dividendos parcialmente sustentados por eventos não recorrentes, exigindo atenção.",
+
+    score_risco: 75,
+    alerta: "RISCO OCULTO",
+    referencia: "Relatório gerencial Janeiro/2026"
+  },
+
+  {
+    ticker: "HGRE11",
+    mes: "Fevereiro/2026",
+    resumo: "Resultado subiu para R$1,06/cota com distribuição mantida em R$0,85, impulsionado por vendas de ativos e ganhos extraordinários.",
+
+    nao_recorrente: {
+      existe: true,
+      descricao: "Venda do Vivo Curitiba (R$0,33/cota) e lucro na venda de FIIs (R$0,11/cota)."
+    },
+
+    riscos: "Resultado elevado por ganhos não recorrentes e revisão contratual relevante com impacto negativo no aluguel futuro.",
+
+    sustentabilidade: "Média",
+    conclusao: "Resultado elevado não reflete recorrência plena; dividendos parecem sustentáveis no curto prazo, mas com distorções.",
+
+    score_risco: 70,
+    alerta: "ATENÇÃO",
+    referencia: "Relatório gerencial Fevereiro/2026"
+  },
+  {
+    ticker: "HGRE11",
+    mes: "Março/2026",
+    resumo: "Resultado forte de R$1,44/cota, com distribuição estável em R$0,85, sustentado por ganho relevante na venda de ativo.",
+
+    nao_recorrente: {
+      existe: true,
+      descricao: "Recebimento da última parcela da venda do Faria Lima (R$0,63/cota)."
+    },
+
+    riscos: "Alta dependência de ganhos de capital para sustentar o resultado e possível distorção na percepção do yield.",
+
+    sustentabilidade: "Média",
+    conclusao: "Fundo sólido, mas resultado recente inflado por eventos não recorrentes; atenção à normalização futura.",
+
+    score_risco: 78,
+    alerta: "RISCO OCULTO",
+    referencia: "Relatório gerencial Março/2026"
   }
-].reverse()
+]
+
+mockFiis.sort((a, b) => parseMesAno(b.mes) - parseMesAno(a.mes));
