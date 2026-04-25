@@ -3,6 +3,7 @@ FROM node:20 AS build
 
 WORKDIR /app
 COPY . .
+RUN npm install lucide-react
 RUN npm install
 RUN npm run build
 
