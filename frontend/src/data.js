@@ -3,9 +3,9 @@ export const mockFiis = [
     ticker: "HGLG11",
     score_medio: 72,
     sustentabilidade: "Média",
-    tipo_risco: "Rendimento Não Recorrente",
+    tipo_risco: "Reciclagem / Ganhos de Capital",
     resumo_padrao:
-      "Parte relevante do resultado vem de eventos não recorrentes, impactando a previsibilidade dos dividendos.",
+      "Fundo com geração de renda majoritariamente recorrente, mas com impacto pontual de eventos não recorrentes nos últimos meses.",
 
     historico: [
       {
